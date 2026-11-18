@@ -63,8 +63,7 @@ main { max-width: 600px; margin: 0 auto; padding: 0 16px calc(var(--tabbar-h) + 
 .banner.subtle { background: var(--fill); color: var(--dim); }
 
 /* ---------- Cards & sections ---------- */
-.card { background: var(--card); border-radius: var(--radius); margin-bottom: 14px; box-shadow: 0 1px 2px rgba(20, 20, 10, 0.04); overflow: hidden; }
-.card.pad { padding: 16px; }
+.card { background: var(--card); border-radius: var(--radius); margin-bottom: 14px; box-shadow: 0 1px 2px rgba(20, 20, 10, 0.04); overflow: hidden; }.card.pad { padding: 16px; }
 .card-title { font-size: 17px; margin: 0 0 6px; }
 .sec-head { display: flex; align-items: baseline; justify-content: space-between; padding: 14px 16px 4px; }
 .sec-head h2 { margin: 0; font-size: 13px; font-weight: 650; letter-spacing: 0.06em; text-transform: uppercase; color: var(--dim); }
@@ -113,7 +112,38 @@ main { max-width: 600px; margin: 0 auto; padding: 0 16px calc(var(--tabbar-h) + 
 
 .tag { display: inline-block; font-size: 12px; font-weight: 600; padding: 1px 7px; border-radius: 6px; background: var(--fill); color: var(--dim); margin-left: 6px; vertical-align: 1px; }
 
-/* ---------- Today log ---------- */
+/* ---------- Notepad task lines ---------- */
+.line { align-items: flex-start; }
+.line .check { margin-top: 3px; }
+.line-main { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 8px 4px 8px 4px; }
+.line-input {
+  display: block; width: 100%; margin: 0; padding: 4px 0; border: 0; border-radius: 0; background: none; outline: none;
+  resize: none; overflow: hidden; font-size: 16.5px; line-height: 1.4; min-height: 31px; -webkit-appearance: none; appearance: none;
+  field-sizing: content;
+}
+.line-main .row-meta { padding-bottom: 2px; }
+.line-notes { font-size: 14px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.line .trail-btn { margin-top: 2px; }
+.check.ghost, .check.plus { pointer-events: none; }
+.check.plus { color: var(--accent); font-size: 26px; font-weight: 300; line-height: 1; }
+.composer .line-input::placeholder { color: var(--accent); font-weight: 550; }
+.composer .line-input:focus::placeholder { color: var(--faint); font-weight: 400; }
+.composer::before { content: ""; position: absolute; top: 0; left: 52px; right: 0; border-top: 1px solid var(--line); }
+.lines:empty + .composer::before { display: none; }
+.notepad .sec-head + .lines:empty + .composer::before { display: none; }
+.drag-handle { flex: none; display: grid; place-items: center; padding: 14px 10px 12px 4px; color: var(--faint); touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none; }
+.lines > .row { transition: transform 0.16s ease; background: var(--card); }
+.lines > .row.overdue { background: linear-gradient(90deg, var(--overdue-soft), var(--card) 70%); }
+.lines > .row.dragging { transition: none; z-index: 5; border-radius: 12px; box-shadow: 0 8px 24px rgba(20, 20, 10, 0.18); }
+.lines > .row.dragging::before, .lines > .row.dragging + .row::before { display: none; }
+body.drag-active { user-select: none; -webkit-user-select: none; cursor: grabbing; }
+.tasks-tip { padding: 0 6px; margin: -4px 0 12px; line-height: 1.5; }
+.tasks-tip b { font-weight: 600; color: var(--text); }
+.inline-icon { width: 15px; height: 15px; vertical-align: -3px; }
+.done-link { padding: 4px 6px; }
+.back-link { padding: 0 4px 12px; }
+
+/* ---------- Log ---------- */
 .log-card .row { min-height: 46px; }
 .log-card .row + .row::before { left: 16px; }
 .log-card .row-main { padding-left: 12px; }

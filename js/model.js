@@ -5,7 +5,7 @@
 //
 // data = {
 //   schemaVersion,
-//   tasks:              { id, title, notes, createdAt, updatedAt, dueDate|null, completed, completedAt|null, pinned, order, deletedAt|null }
+//   tasks:              { id, title, notes, createdAt, updatedAt, dueDate|null, completed, completedAt|null, pinned (unused since v2 layout), order, deletedAt|null }
 //   routines:           { id, title, notes, active, weekdays: [1..7 Mon..Sun], createdAt, updatedAt, order, deletedAt|null }
 //   routineCompletions: { id: routineId@date, routineId, date, completedAt, updatedAt, deletedAt|null }
 //   weeklyGoals:        { id, title, notes, weekStart, completed, completedAt|null, target|null, progress, createdAt, updatedAt, order, deletedAt|null }
@@ -138,25 +138,41 @@ function completedTasks(data) {
     .sort((a, b) => (b.completedAt || '').localeCompare(a.completedAt || ''));
 }
 
-// Today's "Coming up": every overdue task and everything due within a week, then later
-// tasks only until the list reaches `fill` items. The rest live on the Tasks screen.
-function comingUpForToday(data, today, { soonDays = 7, fill = 5 } = {}) {
-  const all = datedTasks(data);
-  const shown = [];
-  for (const t of all) {
-    const diff = daysBetween(today, t.dueDate);
-    if (diff <= soonDays || shown.length < fill) shown.push(t);
-    else break;
+// Quick due dates typed at the end of a task line: "Call shoe factory @tomorrow".
+// Understands @today, @tomorrow/@tmrw, @mon … @sun (next one, today counts), @nextweek
+// (next Monday) and @M/D or @M/D/YY (a past M/D means next year). Anything else is left
+// as part of the title, so an email address or a stray "@" never eats text.
+const QUICK_WEEKDAYS = { mon: 1, monday: 1, tue: 2, tues: 2, tuesday: 2, wed: 3, weds: 3, wednesday: 3,
+  thu: 4, thur: 4, thurs: 4, thursday: 4, fri: 5, friday: 5, sat: 6, saturday: 6, sun: 7, sunday: 7 };
+
+function parseQuickDate(text, today) {
+  const raw = String(text || '').trim();
+  const m = /^(.*\S)\s+@([a-z0-9/-]+)$/i.exec(raw);
+  if (!m) return { title: raw, dueDate: null };
+  const tok = m[2].toLowerCase();
+  let due = null;
+  if (tok === 'today') due = today;
+  else if (tok === 'tomorrow' || tok === 'tmrw' || tok === 'tmw') due = addDays(today, 1);
+  else if (tok === 'nextweek' || tok === 'next-week') due = addDays(weekStartOf(today), 7);
+  else if (tok in QUICK_WEEKDAYS) due = addDays(today, (QUICK_WEEKDAYS[tok] - isoWeekday(today) + 7) % 7);
+  else {
+    const d = /^(\d{1,2})\/(\d{1,2})(?:\/(\d{2}|\d{4}))?$/.exec(tok);
+    if (d) {
+      const mo = +d[1], day = +d[2];
+      let year = d[3] ? (d[3].length === 2 ? 2000 + +d[3] : +d[3]) : +today.slice(0, 4);
+      let key = `${year}-${pad2(mo)}-${pad2(day)}`;
+      if (!d[3] && key < today) key = `${year + 1}-${pad2(mo)}-${pad2(day)}`;
+      if (mo >= 1 && mo <= 12 && day >= 1 && dateKey(parseKey(key)) === key) due = key;
+    }
   }
-  return { items: shown, hidden: all.length - shown.length };
+  return due ? { title: m[1].trim(), dueDate: due } : { title: raw, dueDate: null };
 }
 
-// Today's "Ongoing": all pinned undated tasks, then other undated tasks up to `fill` total.
-function ongoingForToday(data, { fill = 5 } = {}) {
-  const all = ongoingTasks(data);
-  const pinned = all.filter(t => t.pinned);
-  const rest = all.filter(t => !t.pinned).slice(0, Math.max(0, fill - pinned.length));
-  return { items: [...pinned, ...rest], hidden: all.length - pinned.length - rest.length };
+// Turns pasted text into task titles: one per non-empty line, minus list bullets/checkboxes.
+function splitPastedLines(text) {
+  return String(text || '').split(/\r?\n/)
+    .map(l => l.replace(/^\s*(?:[-*\u2022\u25e6]|\d+[.)]|\[[ xX]?\])\s*/, '').trim())
+    .filter(Boolean);
 }
 
 function goalsForWeek(data, weekStart) {

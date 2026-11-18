@@ -79,12 +79,24 @@ D.tasks.push(
   task('deleted', { dueDate: '2026-10-21', deletedAt: '2026-10-20T00:00:00.000Z' })
 );
 for (let i = 1; i <= 8; i++) D.tasks.push(task(`o${i}`, { order: i, pinned: i === 7 }));
-const cu = comingUpForToday(D, today);
-eq(cu.items.map(t => t.id), ['late', 'tomorrow', 'nov15', 'far1', 'far2'], 'coming up: overdue first, capped');
-eq(cu.hidden, 2, 'coming up hidden count');
-const og = ongoingForToday(D);
-eq(og.items.map(t => t.id), ['o7', 'o1', 'o2', 'o3', 'o4'], 'ongoing: pinned then fill to 5');
-eq(og.hidden, 3, 'ongoing hidden count');
+eq(datedTasks(D).map(t => t.id), ['late', 'tomorrow', 'nov15', 'far1', 'far2', 'far3', 'far4'], 'dated: every open dated task, soonest first');
+eq(ongoingTasks(D).map(t => t.id), ['o1', 'o2', 'o3', 'o4', 'o5', 'o6', 'o7', 'o8'], 'undated: all of them, in your order');
+
+// quick dates (today = Wed 2026-10-21)
+eq(parseQuickDate('Call shoe factory @tomorrow', today), { title: 'Call shoe factory', dueDate: '2026-10-22' }, '@tomorrow');
+eq(parseQuickDate('Pay rent @today', today).dueDate, today, '@today');
+eq(parseQuickDate('Gym @Fri', today).dueDate, '2026-10-23', '@fri (case-insensitive)');
+eq(parseQuickDate('Gym @wed', today).dueDate, today, '@wed on a Wednesday is today');
+eq(parseQuickDate('Gym @tue', today).dueDate, '2026-10-27', '@tue wraps to next week');
+eq(parseQuickDate('Plan @nextweek', today).dueDate, '2026-10-26', '@nextweek is next Monday');
+eq(parseQuickDate('Cancel card @11/15', today).dueDate, '2026-11-15', '@M/D this year');
+eq(parseQuickDate('Taxes @4/15', today).dueDate, '2027-04-15', 'past @M/D rolls to next year');
+eq(parseQuickDate('Trip @1/3/28', today).dueDate, '2028-01-03', '@M/D/YY');
+eq(parseQuickDate('Bad @2/30', today), { title: 'Bad @2/30', dueDate: null }, 'invalid date left alone');
+eq(parseQuickDate('Email bob@example.com', today).dueDate, null, 'email address is not a date');
+eq(parseQuickDate('Ask @sam', today), { title: 'Ask @sam', dueDate: null }, 'unknown @word left alone');
+eq(parseQuickDate('@tomorrow', today).dueDate, null, 'needs a title before the date');
+eq(splitPastedLines('- milk\n\n* eggs\n• bread\n1. jam\n[ ] tea\n[x] done thing\nplain'), ['milk', 'eggs', 'bread', 'jam', 'tea', 'done thing', 'plain'], 'paste split strips bullets');
 eq(completedTasks(D).map(t => t.id), ['done'], 'completed list');
 
 D.routines.push(

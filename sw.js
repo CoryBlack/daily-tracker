@@ -1,7 +1,7 @@
 // Bump this on every deploy that touches a cached file — changing this string changes
 // the byte content of sw.js itself, which is what makes the browser notice there's a
 // new service worker to install (comparing cached shell contents alone doesn't).
-const CACHE = 'daily-shell-v2';
+const CACHE = 'daily-shell-v3';
 const SHELL = [
   './',
   './index.html',
@@ -37,7 +37,9 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    fetch(event.request)
+    // cache: 'no-cache' revalidates with the server instead of trusting the browser's HTTP
+    // cache, so a fresh deploy is picked up on the next open rather than minutes later.
+    fetch(event.request, { cache: 'no-cache' })
       .then(res => {
         if (res.ok) caches.open(CACHE).then(c => c.put(event.request, res.clone()));
         return res;

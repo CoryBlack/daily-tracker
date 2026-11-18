@@ -33,34 +33,14 @@
 
 <main>
   <div class="page-head">
-    <h1 id="pageTitle">Today</h1>
+    <h1 id="pageTitle">Tasks</h1>
     <p class="page-sub" id="pageSub"></p>
   </div>
   <div class="banner" id="syncBanner" hidden></div>
   <div class="banner subtle" id="debugBanner" hidden></div>
 
-  <!-- TODAY -->
-  <section id="view-today" class="view">
-    <div id="todayPlan"></div>
-    <section class="card log-card">
-      <div class="sec-head">
-        <h2>Daily log</h2>
-        <button type="button" class="link-btn" data-act="go" data-view="log">History</button>
-      </div>
-      <div id="todayLog"></div>
-      <form id="logQuickForm" class="quick-add" autocomplete="off">
-        <span class="quick-plus">+</span>
-        <input type="text" id="logQuickInput" placeholder="Add entry" enterkeyhint="done" aria-label="Add a log entry for today">
-      </form>
-    </section>
-  </section>
-
   <!-- TASKS -->
-  <section id="view-tasks" class="view" hidden>
-    <div class="segmented" role="tablist">
-      <button type="button" data-act="tasks-tab" data-tab="open" id="tasksOpenTab">Open</button>
-      <button type="button" data-act="tasks-tab" data-tab="done" id="tasksDoneTab">Completed</button>
-    </div>
+  <section id="view-tasks" class="view">
     <div id="tasksBody"></div>
   </section>
 
@@ -76,7 +56,15 @@
 
   <!-- LOG HISTORY -->
   <section id="view-log" class="view" hidden>
-    <button type="button" class="btn block" data-act="add" data-kind="log" data-backdate="1">+ Add an entry</button>
+    <section class="card log-card">
+      <div class="sec-head"><h2>Today</h2></div>
+      <div id="todayLog"></div>
+      <form id="logQuickForm" class="quick-add" autocomplete="off">
+        <span class="quick-plus">+</span>
+        <input type="text" id="logQuickInput" placeholder="Add entry" enterkeyhint="done" aria-label="Add a log entry for today">
+      </form>
+    </section>
+    <button type="button" class="btn block" data-act="add" data-kind="log" data-backdate="1">+ Add an entry for another day</button>
     <div id="logBody"></div>
   </section>
 
@@ -122,11 +110,11 @@
 </main>
 
 <nav class="tabbar">
-  <button type="button" data-act="go" data-view="today" class="tab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span>Today</span></button>
   <button type="button" data-act="go" data-view="tasks" class="tab"><svg viewBox="0 0 24 24"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><circle cx="4.5" cy="6.5" r="1.2"/><circle cx="4.5" cy="12" r="1.2"/><circle cx="4.5" cy="17.5" r="1.2"/></svg><span>Tasks</span></button>
-  <button type="button" data-act="add-menu" class="tab add" aria-label="Add"><span class="add-circle"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
   <button type="button" data-act="go" data-view="routines" class="tab"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 13.7-5.6L20 8.7M20 4v4.7h-4.7M20 12a8 8 0 0 1-13.7 5.6L4 15.3M4 20v-4.7h4.7"/></svg><span>Routines</span></button>
+  <button type="button" data-act="add-menu" class="tab add" aria-label="Add"><span class="add-circle"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></span></button>
   <button type="button" data-act="go" data-view="weekly" class="tab"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Weekly</span></button>
+  <button type="button" data-act="go" data-view="log" class="tab"><svg viewBox="0 0 24 24"><path d="M6 3.5h10.5a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6z"/><path d="M6 3.5v17M9.5 8h5.5M9.5 11.5h5.5"/></svg><span>Log</span></button>
 </nav>
 
 <div class="sheet-backdrop" id="sheetBackdrop" hidden></div>

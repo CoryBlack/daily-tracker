@@ -1,27 +1,32 @@
 # Daily
 
-A personal to-do / routine / weekly-goal app with a daily log. Open it in the morning and
-the **Today** screen answers "what do I need to do today?": today's routines, this week's
-goals, upcoming deadlines, a short list of ongoing responsibilities, and a quick log of
-what you actually did.
+A personal to-do / routine / weekly-goal app with a daily log. It opens straight to your
+**Tasks**, a notepad-style list you can type into directly, with anything time-sensitive
+pinned to the top.
 
 Same setup as the workout and juggling apps: a static web app on GitHub Pages, installed to
 the iPhone home screen as a PWA, with your data stored in a private GitHub repo.
 
 ## Screens
 
-- **Today**: routines scheduled for today (tick them off), this week's goals (tap the
-  `1/3` counter to add progress), Coming up (overdue items plus the next deadlines), Ongoing
-  (pinned tasks, then enough others to reach five), and the Daily log with a one-line quick add.
-- **Tasks**: every open task, with dated tasks sorted by due date and ongoing tasks in
-  your own order (Reorder). Tap the pin to keep a task on Today. The **Completed** tab is
-  the history.
-- **Routines**: what each weekday looks like, plus the list of routines. Pausing a routine
-  hides it but keeps its history.
-- **Weekly**: this week's goals (weeks run Monday–Sunday) and previous weeks.
+- **Tasks** (opens first): **Time-sensitive** lists every task with a due date, soonest first
+  (overdue tasks are highlighted). **To do** lists everything else in your own order. Each line
+  works like a notepad:
+  - Tap a task to edit its text. **Enter** starts a new line below it, and **Backspace** on an
+    empty line deletes it (with Undo). Clearing a line's text also deletes it.
+  - The **Add a task** line at the bottom stays ready, so you can type several in a row.
+    Pasting a multi-line list makes one task per line (bullets and `[ ]` are stripped).
+  - Drag the grip (=) to reorder.
+  - End a line with `@today`, `@tomorrow`, `@fri`, `@nextweek` or `@12/3` to give it a due
+    date, or tap the calendar button for the due date, notes and delete.
+  - **Completed (n)** at the bottom shows the history.
+- **Routines**: today's checklist (tick them off), what each weekday looks like, and the list
+  of routines. Pausing a routine hides it but keeps its history.
+- **Weekly**: this week's goals (tap the `1/3` counter to add progress) and previous weeks.
+- **Log**: a one-line quick add for today, plus every earlier day.
 - **Search** (magnifier): searches everything, including completed tasks, past weeks and the
   log. Results are newest first.
-- **+**: add a task, routine, weekly goal or log entry.
+- **+**: add a task (with a date picker), routine, weekly goal or log entry.
 
 ## Setup
 
